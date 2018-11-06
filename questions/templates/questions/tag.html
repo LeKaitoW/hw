@@ -1,0 +1,16 @@
+{% extends "./base.html" %}
+
+{% block title %}Questions!{% endblock %}
+
+{% block content %}
+<h1>By tag questions:</h1>
+{% if by_tag %}
+    <ul>
+    {% for question in hot_questions %}
+        <li><a href="{% url 'question' question.id %}">{{ question.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No questions are available.</p>
+{% endif %}
+{% endblock %}
