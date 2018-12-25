@@ -1,16 +1,11 @@
 {% extends base_template %}
+
+{% block title %}Sign up{% endblock %}
+
 {% block content %}
-<h1>Sign up</h1>
-<form method="post" action="">
-<dl class="register">
-{% for field in form %}
-    <dt>{{ field.label_tag }}</dt>
-    <dd class="clearfix">{{ field }}
-    {% if field.help_text %}<div class="clearfix">{{ field.help_text }}</div>{% endif %}
-    {% if field.errors %}<div class="myerrors clearfix">{{ field.errors }}</div>{% endif %}
-    </dd>
-{% endfor %}
-</dl>
-<input type="submit" value="Sign up" / class="clearfix">
+<form method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<button type="submit" class="btn btn-default">Sign up</button>
 </form>
 {% endblock %}

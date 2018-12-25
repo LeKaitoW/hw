@@ -13,6 +13,12 @@
               </h4>
               <p>{{ question.date }}</p>
               <p>{{ question.text }}</p>
+              {% if question.tags.all %}
+                <p>Tags:</p>
+                {% for tag in question.tags.all %}
+                <a class="text-muted mr-1" href="{% url 'by_tag' tag=tag.word %}">{{ tag.word }}</a>
+                {% endfor %}
+              {% endif %}
               <p>Comments: {{ question.answer_set.count }}</p>
             </div>
           </div>

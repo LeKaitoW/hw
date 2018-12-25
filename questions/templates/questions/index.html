@@ -18,7 +18,14 @@
               </h4>
               <p>{{ question.text }}</p>
               <p>{{ question.date }}</p>
-              <p>Tags:</p>
+              <p>{{ question.author.nickname }}</p>
+              <p>Rate: {{ question.rate }}</p>
+              {% if question.tags.all %}
+                <p>Tags:</p>
+                {% for tag in question.tags.all %}
+                <a class="text-muted mr-1" href="{% url 'by_tag' tag=tag.word %}">{{ tag.word }}</a>
+                {% endfor %}
+              {% endif %}
               <p>Answers: {{ question.answer_set.count }}</p>
             </div>
           </div>

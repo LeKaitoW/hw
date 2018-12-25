@@ -5,11 +5,24 @@
 {% block content %}
 <h1>By tag questions:</h1>
 {% if by_tag %}
-    <ul>
-    {% for question in hot_questions %}
-        <li><a href="{% url 'question' question.id %}">{{ question.title }}</a></li>
+    {% for question in by_tag %}
+        <div class="card flex-md-row mb-4 shadow-sm">
+            <div class="card-body d-flex flex-column align-items-start">
+              <h4 class="mb-0">
+                <a class="text-dark" href="{% url 'question' question.id %}">{{ question.title }}</a>
+              </h4>
+              <p>{{ question.text }}</p>
+              <p>{{ question.date }}</p>
+              {% if question.tags.all %}
+                <p>Tags:</p>
+                {% for tag in question.tags.all %}
+                <a class="text-muted mr-1" href="{% url 'by_tag' tag=tag.word %}">{{ tag.word }}</a>
+                {% endfor %}
+              {% endif %}
+              <p>Answers: {{ question.answer_set.count }}</p>
+            </div>
+          </div>
     {% endfor %}
-    </ul>
 {% else %}
     <p>No questions are available.</p>
 {% endif %}
