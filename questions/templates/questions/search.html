@@ -1,0 +1,23 @@
+{% extends base_template %}
+
+{% block title %}Questions!{% endblock %}
+
+{% block content %}
+<h3>Search result: {{ search_str }}</h3>
+{% if themed_posts %}
+    {% for question in themed_posts %}
+          <div class="card flex-md-row mb-4 shadow-sm">
+            <div class="card-body d-flex flex-column align-items-start">
+              <h4 class="mb-0">
+                <a class="text-dark" href="{% url 'question' question.id %}">{{ question.title }}</a>
+              </h4>
+              <p>{{ question.date }}</p>
+              <p>{{ question.text }}</p>
+              <p>Comments: {{ question.answer_set.count }}</p>
+            </div>
+          </div>
+    {% endfor %}
+{% else %}
+    <p>No questions are available.</p>
+{% endif %}
+{% endblock %}

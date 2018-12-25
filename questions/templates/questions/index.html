@@ -1,8 +1,14 @@
-{% extends "./base.html" %}
+{% extends base_template %}
 
 {% block title %}Questions!{% endblock %}
 
 {% block content %}
+<div class="nav-scroller py-1 mb-2">
+  <nav class="nav d-flex">
+    <a class="p-2 text-muted" href="/"><u><b>Latest</b></u></a>
+    <a class="p-2 text-muted" href="/hot/">Hot</a>
+  </nav>
+</div>
 {% if latest_questions %}
     {% for question in latest_questions %}
           <div class="card flex-md-row mb-4 shadow-sm">
@@ -11,9 +17,29 @@
                 <a class="text-dark" href="{% url 'question' question.id %}">{{ question.title }}</a>
               </h4>
               <p>{{ question.text }}</p>
+              <p>{{ question.date }}</p>
+              <p>Tags:</p>
+              <p>Answers: {{ question.answer_set.count }}</p>
             </div>
           </div>
     {% endfor %}
+<div class="pagination">
+  <span class="step-links">
+    {% if latest_questions.has_previous %}
+      <a href="?page=1">&laquo; first</a>
+      <a href="?page={{ latest_questions.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+      page {{ latest_questions.number }} of {{ latest_questions.paginator.num_pages }}
+    </span>
+
+    {% if latest_questions.has_next %}
+            <a href="?page={{ latest_questions.next_page_number }}">next</a>
+            <a href="?page={{ latest_questions.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 {% else %}
     <p>No questions are available.</p>
 {% endif %}

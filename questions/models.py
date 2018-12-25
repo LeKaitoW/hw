@@ -12,7 +12,7 @@ class Tag(models.Model):
 class Question(models.Model):
 	title = models.CharField(max_length=80)
 	text = models.CharField(max_length=200)
-	author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+	#author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 	date = models.DateTimeField('date published')
 	tags = models.ManyToManyField(Tag)
 	rate = models.IntegerField(default=0)
@@ -28,7 +28,7 @@ class Question(models.Model):
 class Answer(models.Model):
 	question = models.ForeignKey(Question, on_delete=models.CASCADE)
 	text = models.CharField(max_length=200)
-	author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+	#author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 	date = models.DateTimeField('date published')
 	correct = models.BooleanField()
 	rate = models.IntegerField(default=0)
