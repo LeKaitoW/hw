@@ -26,28 +26,15 @@
                 <a class="text-muted mr-1" href="{% url 'by_tag' tag=tag.word %}">{{ tag.word }}</a>
                 {% endfor %}
               {% endif %}
-              <p>Answers: {{ question.answer_set.count }}</p>
+              <p>Answers: {{ question.answers.count }}</p>
             </div>
           </div>
     {% endfor %}
-<div class="pagination">
-  <span class="step-links">
-    {% if latest_questions.has_previous %}
-      <a href="?page=1">&laquo; first</a>
-      <a href="?page={{ latest_questions.previous_page_number }}">previous</a>
-    {% endif %}
-
-    <span class="current">
-      page {{ latest_questions.number }} of {{ latest_questions.paginator.num_pages }}
-    </span>
-
-    {% if latest_questions.has_next %}
-            <a href="?page={{ latest_questions.next_page_number }}">next</a>
-            <a href="?page={{ latest_questions.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
 {% else %}
     <p>No questions are available.</p>
 {% endif %}
+{% load bootstrap4 %}
+<div class="row justify-content-center">
+  {% bootstrap_pagination latest_questions %}
+</div>
 {% endblock %}

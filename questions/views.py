@@ -16,27 +16,33 @@ def paginate(objects_list, request):
     return objects_page, paginator
 
 def base_template(request):
+    context = dict()
     if request.user.is_authenticated:
-        base_template = 'questions/authenticated.html'
+        context['base_template'] = 'questions/authenticated.html'
+        context['user'] = request.user
     else:
-        base_template = 'questions/base.html'
-    return base_template
+        context['base_template'] = 'questions/base.html'
+    return context
 
 def index(request):
     latest_questions = Question.objects.order_by('-date')
     latest, _ = paginate(latest_questions, request)
-    return render(request, 'questions/index.html', {'latest_questions' : latest, 'base_template':base_template(request)})
+    context = {'latest_questions': latest}
+    context.update(base_template(request))
+    return render(request, 'questions/index.html', context)
 
 def best_questions(request):
     hot_questions = Question.objects.order_by('-rate')
     hot, _ = paginate(hot_questions, request)
-    context = {'hot_questions':hot, 'base_template':base_template(request)}
+    context = {'hot_questions': hot}
+    context.update(base_template(request))
     return render(request, 'questions/hot.html', context)
 
 def by_tag(request, tag):
     tags = get_object_or_404(Tag, word=tag)
-    questions = Question.objects.filter(tags__id=tags.id)
-    context = {'by_tag':questions, 'base_template':base_template(request)}
+    questions = Question.objects.by_tag(tag)
+    context = {'by_tag': questions}
+    context.update(base_template(request))
     return render(request, 'questions/tag.html', context)
 
 def question(request, question_id):
@@ -56,7 +62,8 @@ def question(request, question_id):
         all_answers = Answer.objects.filter(question_id=question.pk)
         answers, _ = paginate(all_answers, request)
         tags = Tag.objects.filter()
-        context = {'form':form, 'question':question, 'answers' : answers, 'base_template':base_template(request)}
+        context = {'form':form, 'question':question, 'answers':answers }
+        context.update(base_template(request))
     return render(request, 'questions/question.html', context)
 
 def login_view(request):
@@ -72,7 +79,9 @@ def login_view(request):
             return HttpResponse("Invalid")
     else:
         form = AuthenticationForm()
-    return render(request, 'questions/login.html', {'form':form, 'base_template':base_template(request)})
+    context = {'form':form}
+    context.update(base_template(request))
+    return render(request, 'questions/login.html', context)
 
 def registration(request):
     if request.method == "POST":
@@ -85,7 +94,9 @@ def registration(request):
             return redirect('login')
     else:
         form = RegisterForm()
-    return render(request, 'questions/signup.html', {'form':form, 'base_template':base_template(request)})
+    context = {'form':form}
+    context.update(base_template(request))
+    return render(request, 'questions/signup.html', context)
 
 def ask(request):
     if request.method == "POST":
@@ -98,14 +109,16 @@ def ask(request):
             return redirect('question', question_id=inst.pk)
     else:
         form = QuestionForm()
-        context = {'form':form, 'base_template':base_template(request)}
+        context = {'form':form}
+        context.update(base_template(request))
         return render(request, "questions/ask.html", context)
 
 
 def search(request):
     search_str = request.GET.get("search_str")
     themed_posts = Question.objects.filter(title__icontains=search_str)
-    context = {'themed_posts' : themed_posts, 'search_str' : search_str, 'base_template':base_template(request)}
+    context = {'themed_posts' : themed_posts, 'search_str' : search_str}
+    context.update(base_template(request))
     return render(request, "questions/search.html", context)
 
 def logout_view(request):

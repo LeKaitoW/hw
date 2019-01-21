@@ -30,24 +30,11 @@
             </div>
           </div>
     {% endfor %}
-<div class="pagination">
-  <span class="step-links">
-    {% if hot_questions.has_previous %}
-      <a href="?page=1">&laquo; first</a>
-      <a href="?page={{ hot_questions.previous_page_number }}">previous</a>
-    {% endif %}
-
-    <span class="current">
-      page {{ hot_questions.number }} of {{ hot_questions.paginator.num_pages }}
-    </span>
-
-    {% if hot_questions.has_next %}
-            <a href="?page={{ hot_questions.next_page_number }}">next</a>
-            <a href="?page={{ hot_questions.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
-</div>
 {% else %}
     <p>No questions are available.</p>
 {% endif %}
+{% load bootstrap4 %}
+<div class="row justify-content-center">
+  {% bootstrap_pagination hot_questions %}
+</div>
 {% endblock %}

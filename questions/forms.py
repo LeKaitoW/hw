@@ -19,7 +19,7 @@ class RegisterForm(forms.Form):
 
 	class Meta:
 		model = Profile
-		fields = ('username', 'email', 'password')
+		fields = ['username', 'nickname', 'email', 'password']
 
 	def clear_password(self):
 		data = super().clean()

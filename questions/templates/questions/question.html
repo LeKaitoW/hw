@@ -6,9 +6,9 @@
 <h3>{{ question.title }}</h3>
 <p>{{ question.date }}</p>
 <p>{{ question.text }}</p>
-<button type="submit" class="btn btn-outline-dark ml-1 mr-1">+</button>
-<p>Rate: {{ question.rate }}</p>
-<button type="submit" class="btn btn-outline-dark ml-1 mr-1">+</button>
+<button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">+</button>
+<p class="mb-0">Rate: {{ question.rate }}</p>
+<button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">-</button>
 {% if question.tags.all %}
   <p>Tags:</p>
   {% for tag in question.tags.all %}
@@ -22,29 +22,15 @@
 	            <p>{{ answer.text }}</p>
 	            <p>{{ answer.date }}</p>
               <p>{{ answer.author.nickname }}</p>
-              <button type="submit" class="btn btn-outline-dark ml-1 mr-1">+</button>
-              <p>Rate: {{ answer.rate }}</p>
-              <button type="submit" class="btn btn-outline-dark ml-1 mr-1">+</button>
+              <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">+</button>
+              <p class="mb-0"> Rate: {{ answer.rate }}</p>
+              <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">-</button>
 	        </div>
 	    </div>
 	{% endfor %}
-
-<div class="pagination">
-  <span class="step-links">
-    {% if answers.has_previous %}
-      <a href="?page=1">&laquo; first</a>
-      <a href="?page={{ answers.previous_page_number }}">previous</a>
-    {% endif %}
-
-    <span class="current">
-      page {{ answers.number }} of {{ answers.paginator.num_pages }}
-    </span>
-
-    {% if answers.has_next %}
-            <a href="?page={{ answers.next_page_number }}">next</a>
-            <a href="?page={{ answers.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+{% load bootstrap4 %}
+<div class="row justify-content-center">
+  {% bootstrap_pagination answers %}
 </div>
 {% endif %}
 
