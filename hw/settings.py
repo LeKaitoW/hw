@@ -127,4 +127,4 @@ MEDIA_URL = '/media/'
 # MEDIA_URL = '/media/'
 
 
-AUTH_USER_MODEL = 'questions.Profile'
+AUTH_USER_MODEL = 'questions.profile'

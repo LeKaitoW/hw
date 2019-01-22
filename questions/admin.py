@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import Answer, Question, Tag, Profile
 
 class UserAdmin(admin.ModelAdmin):
-	fields = ['email', 'username', 'nickname', 'upload']
+    fields = ['email', 'username', 'nickname', 'upload']
 
 admin.site.register(Profile, UserAdmin)
 admin.site.register(Question)

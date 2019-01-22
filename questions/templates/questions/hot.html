@@ -18,6 +18,7 @@
               </h4>
               <p>{{ question.text }}</p>
               <p>{{ question.date }}</p>
+              <img class="image-blog" src="{{ question.author.upload.url }}"</img>
               <p>{{ question.author.nickname }}</p>
               <p>Rate: {{ question.rate }}</p>
               {% if question.tags.all %}

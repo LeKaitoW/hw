@@ -4,9 +4,40 @@
 
 {% block content %}
 <h3>New question</h3>
-<form method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	<button type="submit" class="btn btn-default">Question</button>
-</form>
+<hr>
+    <form enctype="multipart/form-data" method="POST" class="post-form">
+        {% csrf_token %}
+        
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Title:</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ form.title.errors }}</strong>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Question:</label>
+            {{ form.text }}
+            {% if form.text.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ form.text.errors }}</strong>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Tags:</label>
+            {{ form.tags }}
+            {% if form.tags.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ form.tags.errors }}</strong>
+                </div>
+            {% endif %}
+        </div>
+    
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Ask!</button>
+    </form>
 {% endblock %}

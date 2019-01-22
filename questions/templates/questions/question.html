@@ -6,27 +6,35 @@
 <h3>{{ question.title }}</h3>
 <p>{{ question.date }}</p>
 <p>{{ question.text }}</p>
+<img class="image-blog" src="{{ question.author.upload.url }}"</img>
+<p>{{ question.author.nickname }}</p>
 <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">+</button>
 <p class="mb-0">Rate: {{ question.rate }}</p>
-<button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">-</button>
+<button type="submit" class="btn btn-outline-dark ml-1 mr-1 mb-2 rate-button">-</button>
 {% if question.tags.all %}
   <p>Tags:</p>
   {% for tag in question.tags.all %}
   <a class="text-muted mr-1" href="{% url 'by_tag' tag=tag.word %}">{{ tag.word }}</a>
   {% endfor %}
-  {% endif %}
+{% endif %}
 {% if answers %}
 	{% for answer in answers %}
-		<div class="card flex-md-row mb-2 shadow-sm">
-	        <div class="card-body d-flex flex-column align-items-start">
-	            <p>{{ answer.text }}</p>
-	            <p>{{ answer.date }}</p>
-              <p>{{ answer.author.nickname }}</p>
-              <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">+</button>
-              <p class="mb-0"> Rate: {{ answer.rate }}</p>
-              <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">-</button>
-	        </div>
-	    </div>
+		<div class="card flex-md-row mt-2 mb-2 shadow-sm" id="answer_{{ answer.id }}">
+      <div class="card-body d-flex flex-column align-items-start">
+        <p>{{ answer.text }}</p>
+        <p>{{ answer.date }}</p>
+        <img class="image-blog" src="{{ answer.author.upload.url }}"</img>
+        <p>{{ answer.author.nickname }}</p>
+        <p>Correct:</p>
+        <div>
+          <input id="correct" type="checkbox">
+          <label for="correct">Correct answer</label>
+        </div>
+        <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">+</button>
+        <p class="mb-0"> Rate: {{ answer.rate }}</p>
+        <button type="submit" class="btn btn-outline-dark ml-1 mr-1 rate-button">-</button>
+      </div>
+    </div>
 	{% endfor %}
 {% load bootstrap4 %}
 <div class="row justify-content-center">

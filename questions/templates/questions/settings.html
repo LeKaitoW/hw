@@ -1,0 +1,65 @@
+{% extends base_template %}
+
+{% block title %}User settings!{% endblock %}
+
+{% block content %}
+ <div class="row">
+  <div class="col-8">
+  	<h3 class="font-weight-bold">
+      <span>Settings: </span>
+      <span>{{ user.nickname }}</span>
+    </h3>
+   </div>
+</div>
+  
+<form enctype="multipart/form-data" method="POST" class="post-form mb-4">
+  {% csrf_token %}
+ 	<div class="form-group row">
+    <label class="col-md-3 col-form-label">Login:</label>
+    <div class="col-md-4">
+      {{ form.username }}
+    </div>
+      {% if form.username.errors %}
+    		<div class="alert alert-danger">
+        	<strong>{{ form.username.errors }}</strong>
+      	</div>
+      {% endif %}
+      </div>
+      	<div class="form-group row">
+          <label class="col-md-3 col-form-label">Email:</label>
+          <div class="col-md-4">
+              {{ form.email }}
+          </div>
+          {% if form.email.errors %}
+            <div class="alert alert-danger">
+              <strong>{{ form.email.errors }}</strong>
+            </div>
+          {% endif %}
+        </div>
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label">Nickname:</label>
+        <div class="col-md-4">
+          {{ form.nickname }}
+        </div>
+        {% if form.nickname.errors %}
+          <div class="alert alert-danger">
+            <strong>{{ form.nickname.errors }}</strong>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group row">	
+        <label class="col-md-3 col-form-label">Upload Avatar:</label>
+        <div class="col-6" id="Image">
+          {{ form.upload }}
+        </div>
+        {% if form.avatar_path.errors %}
+          <div class="alert alert-danger">
+            <strong>{{ form.upload.errors }}</strong>
+          </div>
+        {% endif %}
+      </div>
+
+      <button class="btn btn-sm ml-1 btn-outline-secondary" type="submit">Save!</button>
+</form>
+{% endblock %}

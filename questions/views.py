@@ -5,8 +5,9 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Question, Answer, Tag
-from .forms import QuestionForm, AnswerForm, RegisterForm
-
+from .forms import QuestionForm, AnswerForm, RegisterForm, SettingsForm
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def paginate(objects_list, request):
@@ -14,6 +15,7 @@ def paginate(objects_list, request):
     page = request.GET.get('page')
     objects_page = paginator.get_page(page)
     return objects_page, paginator
+
 
 def base_template(request):
     context = dict()
@@ -25,14 +27,14 @@ def base_template(request):
     return context
 
 def index(request):
-    latest_questions = Question.objects.order_by('-date')
+    latest_questions = Question.objects.all()
     latest, _ = paginate(latest_questions, request)
     context = {'latest_questions': latest}
     context.update(base_template(request))
     return render(request, 'questions/index.html', context)
 
 def best_questions(request):
-    hot_questions = Question.objects.order_by('-rate')
+    hot_questions = Question.objects.get_most_hot()
     hot, _ = paginate(hot_questions, request)
     context = {'hot_questions': hot}
     context.update(base_template(request))
@@ -40,7 +42,7 @@ def best_questions(request):
 
 def by_tag(request, tag):
     tags = get_object_or_404(Tag, word=tag)
-    questions = Question.objects.by_tag(tag)
+    questions = Question.objects.get_by_tag(tag)
     context = {'by_tag': questions}
     context.update(base_template(request))
     return render(request, 'questions/tag.html', context)
@@ -56,19 +58,22 @@ def question(request, question_id):
             inst.correct = False
             inst.author = request.user
             inst.save()
-            return redirect('question', question_id=question_id)
+            return redirect('{0}#answer_{1}'.format(reverse('question', kwargs={'question_id':question_id}), inst.id))
+            # return redirect('question', question_id=question_id)
     else:
         form = AnswerForm()
-        all_answers = Answer.objects.filter(question_id=question.pk)
+        all_answers = question.answers.all()
         answers, _ = paginate(all_answers, request)
-        tags = Tag.objects.filter()
-        context = {'form':form, 'question':question, 'answers':answers }
+        tags = question.tags.all()
+        context = {'form': form, 'question': question, 'answers': answers }
         context.update(base_template(request))
     return render(request, 'questions/question.html', context)
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('settings')
     if request.method == "POST":
-        form = AuthenticationForm(request.POST)
+        form = AuthenticationForm()
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
@@ -78,26 +83,28 @@ def login_view(request):
         else:
             return HttpResponse("Invalid")
     else:
-        form = AuthenticationForm()
-    context = {'form':form}
+        form = AuthenticationForm(request.POST)
+    context = {'form': form}
     context.update(base_template(request))
     return render(request, 'questions/login.html', context)
 
 def registration(request):
     if request.method == "POST":
-        form = RegisterForm(request.POST)
+        form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
             inst = form.save(commit=False)
             inst.set_password(inst.password)
             inst.is_active = True
             inst.save()
-            return redirect('login')
+            login(request, inst)
+            return redirect('index')
     else:
         form = RegisterForm()
-    context = {'form':form}
+    context = {'form': form}
     context.update(base_template(request))
     return render(request, 'questions/signup.html', context)
 
+@login_required(login_url='login')
 def ask(request):
     if request.method == "POST":
         form = QuestionForm(request.POST)
@@ -106,13 +113,16 @@ def ask(request):
             inst.date = timezone.now()
             inst.author = request.user
             inst.save()
+            for tag in form['tags'].data.split():
+                new_tag = Tag.objects.get_or_create(word=tag)
+                inst.tags.add(new_tag[0])
+            inst.save()
             return redirect('question', question_id=inst.pk)
     else:
         form = QuestionForm()
-        context = {'form':form}
+        context = {'form': form}
         context.update(base_template(request))
         return render(request, "questions/ask.html", context)
-
 
 def search(request):
     search_str = request.GET.get("search_str")
@@ -124,3 +134,16 @@ def search(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def settings(request):
+    if request.method == "POST":
+        form = SettingsForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            return redirect('settings')
+    else:
+        form = SettingsForm(instance=request.user)
+    context = {'form': form}
+    context.update(base_template(request))
+    return render(request, "questions/settings.html", context)
